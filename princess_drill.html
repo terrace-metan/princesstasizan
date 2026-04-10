@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧜‍♀️ プリンセス計算ドリル 🌸</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap');
+
+  :root {
+    --pink-light: #ffe0f0;
+    --pink-mid: #ffb3d9;
+    --pink-main: #ff69b4;
+    --pink-dark: #e0559a;
+    --purple: #d966cc;
+    --gold: #ffd700;
+    --mint: #a8edde;
+    --bg: #fff5fb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic Pro', sans-serif;
+    background: linear-gradient(135deg, #fff0fa 0%, #ffe8f5 50%, #f5e8ff 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== FLOATING ELEMENTS ===== */
+  .floaters {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .floater {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.15;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 0.15; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ===== SCREENS ===== */
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .screen.active { display: flex; }
+
+  /* ===== CARD ===== */
+  .card {
+    background: rgba(255,255,255,0.92);
+    border-radius: 30px;
+    box-shadow: 0 8px 32px rgba(255,105,180,0.18), 0 2px 8px rgba(0,0,0,0.08);
+    padding: 30px 28px;
+    max-width: 520px;
+    width: 100%;
+    border: 3px solid var(--pink-mid);
+  }
+
+  /* ===== TITLE ===== */
+  .app-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink-dark), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    text-shadow: none;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .app-subtitle {
+    text-align: center;
+    color: var(--pink-dark);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+  }
+
+  /* ===== CHARACTER ===== */
+  .char-wrap {
+    text-align: center;
+    margin: 10px 0 16px;
+    position: relative;
+  }
+  .char-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid var(--pink-mid);
+    box-shadow: 0 4px 20px rgba(255,105,180,0.3);
+    object-fit: cover;
+    background: linear-gradient(135deg, #ffe0f0, #e8d5ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    margin: 0 auto;
+  }
+  .char-bubble {
+    background: linear-gradient(135deg, #fff5fb, #fce8ff);
+    border: 2px solid var(--pink-mid);
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    color: #aa4488;
+    margin-top: 10px;
+    position: relative;
+    display: inline-block;
+    max-width: 320px;
+  }
+  .char-bubble::before {
+    content: '';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: var(--pink-mid);
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-block;
+    padding: 14px 36px;
+    border-radius: 50px;
+    border: none;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink-main), var(--purple));
+    color: white;
+    box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+    font-size: 1.25rem;
+    width: 100%;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,105,180,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: white;
+    color: var(--pink-dark);
+    border: 2px solid var(--pink-mid);
+    font-size: 0.95rem;
+  }
+  .btn-secondary:hover { background: var(--pink-light); }
+  .btn-answer {
+    background: linear-gradient(135deg, #ff8cba, var(--pink-dark));
+    color: white;
+    box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+    width: 100%;
+    font-size: 1.3rem;
+    padding: 16px;
+  }
+
+  /* ===== DIFFICULTY SELECTOR ===== */
+  .diff-label {
+    font-size: 1rem;
+    color: #aa4488;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .diff-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .diff-btn {
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 2.5px solid var(--pink-mid);
+    background: white;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #cc66aa;
+  }
+  .diff-btn.selected {
+    background: linear-gradient(135deg, var(--pink-main), var(--purple));
+    color: white;
+    border-color: var(--purple);
+    box-shadow: 0 3px 10px rgba(255,105,180,0.4);
+  }
+
+  /* ===== TIMER ===== */
+  .timer-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .timer-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: conic-gradient(var(--pink-main) var(--pct, 0%), #f0d0e8 0%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(255,105,180,0.3);
+  }
+  .timer-inner {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--pink-dark);
+  }
+  .timer-circle.warning { background: conic-gradient(#ff4444 var(--pct, 0%), #ffd0d0 0%); }
+  .timer-circle.warning .timer-inner { color: #cc0000; animation: timerPulse 0.5s ease infinite alternate; }
+  @keyframes timerPulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+
+  /* ===== SCORE BAR ===== */
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--pink-light);
+    border-radius: 15px;
+    padding: 8px 16px;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--pink-dark);
+  }
+  .score-stars { font-size: 1.1rem; }
+
+  /* ===== PROBLEM AREA ===== */
+  .problem-box {
+    background: linear-gradient(135deg, #fff5fb, #fce8ff);
+    border-radius: 24px;
+    border: 3px solid var(--pink-mid);
+    padding: 22px 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .problem-equation {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .num-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .num-display {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #cc44aa;
+    line-height: 1;
+  }
+  .candy-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    max-width: 140px;
+  }
+  .candy {
+    font-size: 1.1rem;
+    animation: candyPop 0.3s ease;
+  }
+  @keyframes candyPop { from { transform: scale(0); } to { transform: scale(1); } }
+  .operator {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--purple);
+    padding-top: 4px;
+  }
+  .equals {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--purple);
+    padding-top: 4px;
+  }
+  .answer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ===== INPUT ===== */
+  .answer-input {
+    width: 90px;
+    height: 68px;
+    border-radius: 16px;
+    border: 3px solid var(--pink-mid);
+    font-family: inherit;
+    font-size: 2.6rem;
+    font-weight: 900;
+    text-align: center;
+    color: var(--pink-dark);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .answer-input:focus {
+    border-color: var(--pink-dark);
+    box-shadow: 0 0 0 3px rgba(255,105,180,0.25);
+  }
+  .answer-input.correct { border-color: #44cc88; background: #efffee; }
+  .answer-input.wrong   { border-color: #ff4444; background: #fff0f0; animation: shake 0.4s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%     { transform: translateX(-8px); }
+    75%     { transform: translateX(8px); }
+  }
+
+  /* ===== NUMPAD ===== */
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .num-key {
+    padding: 12px 0;
+    border-radius: 14px;
+    border: 2.5px solid var(--pink-mid);
+    background: white;
+    font-family: inherit;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--pink-dark);
+    cursor: pointer;
+    transition: all 0.15s;
+    touch-action: manipulation;
+  }
+  .num-key:hover { background: var(--pink-light); transform: translateY(-1px); }
+  .num-key:active { transform: translateY(0) scale(0.97); }
+  .num-key.del { background: var(--pink-light); font-size: 1.2rem; }
+
+  /* ===== FEEDBACK ===== */
+  .feedback {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-height: 30px;
+    margin: 6px 0;
+  }
+  .feedback.correct { color: #22aa66; }
+  .feedback.wrong   { color: #ee3333; }
+
+  /* ===== RESULT SCREEN ===== */
+  .result-stars {
+    font-size: 3rem;
+    text-align: center;
+    margin: 12px 0;
+    animation: starSpin 1s ease;
+  }
+  @keyframes starSpin {
+    0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
+    60%  { transform: scale(1.3) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .result-score {
+    text-align: center;
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink-dark), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .result-detail {
+    text-align: center;
+    color: #aa4488;
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+  .result-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .result-btns .btn { flex: 1; min-width: 120px; }
+
+  /* ===== CONFETTI ===== */
+  #confetti-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+    top: -20px;
+  }
+  @keyframes confettiFall {
+    0%   { transform: translateY(0) rotateZ(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+  }
+
+  /* ===== HISTORY ===== */
+  .history-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 12px 0;
+  }
+  .history-item {
+    background: var(--pink-light);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .history-item .date { font-size: 0.8rem; color: #aa88aa; }
+  .history-item .score-badge {
+    background: linear-gradient(135deg, var(--pink-main), var(--purple));
+    color: white;
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--pink-dark);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  /* ===== NAV ===== */
+  .bottom-nav {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    background: white;
+    border: 2px solid var(--pink-mid);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--pink-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--pink-light); }
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--pink-main), var(--purple));
+    color: white;
+    border-color: transparent;
+  }
+
+  /* ===== SPARKLE ===== */
+  .sparkle {
+    display: inline-block;
+    animation: sparkle 1.5s ease infinite alternate;
+  }
+  @keyframes sparkle {
+    from { transform: scale(1) rotate(-5deg); }
+    to   { transform: scale(1.15) rotate(5deg); }
+  }
+
+  /* ===== CELEBRATION OVERLAY ===== */
+  .celebrate-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255,230,245,0.85);
+    z-index: 500;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  .celebrate-overlay.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .celebrate-char { font-size: 100px; animation: celebBounce 0.8s ease infinite alternate; }
+  @keyframes celebBounce { from { transform: translateY(0) scale(1); } to { transform: translateY(-20px) scale(1.1); } }
+  .celebrate-msg {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--pink-dark);
+    text-align: center;
+    margin: 16px;
+    animation: celebPop 0.5s ease;
+  }
+  @keyframes celebPop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* ===== PROGRESS ===== */
+  .progress-wrap {
+    background: var(--pink-light);
+    border-radius: 50px;
+    height: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--pink-main), var(--purple));
+    transition: width 0.3s ease;
+  }
+
+  /* ===== SCROLL ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--pink-light); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--pink-mid); border-radius: 10px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 400px) {
+    .num-display { font-size: 2.2rem; }
+    .operator, .equals { font-size: 2rem; }
+    .answer-input { width: 72px; height: 56px; font-size: 2rem; }
+    .candy { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating decorations -->
+<div class="floaters" id="floaters"></div>
+
+<!-- Confetti -->
+<div id="confetti-container"></div>
+
+<!-- Celebration overlay -->
+<div class="celebrate-overlay" id="celebrateOverlay">
+  <div class="celebrate-char" id="celebChar" style="font-size:inherit">
+    <img src="mermaid.png" style="width:180px;height:auto;display:block;margin:0 auto;animation:celebBounce 0.8s ease infinite alternate;" alt="マーメイドキャラクター"/>
+  </div>
+  <div class="celebrate-msg" id="celebMsg"></div>
+  <button class="btn btn-primary" style="max-width:220px;margin-top:10px" onclick="closeCelebrate()">つぎへ ➡</button>
+</div>
+
+<!-- ========== SCREEN: START ========== -->
+<div class="screen active" id="screenStart">
+  <div class="card">
+    <div class="app-title">🌸 プリンセスドリル 🌸</div>
+    <div class="app-subtitle">しょうがく１ねんせい・１がっきのさんすう</div>
+
+    <div class="char-wrap">
+      <div class="char-img" id="startChar" style="background:transparent;border:none;box-shadow:none;width:210px;height:auto;">
+        <img src="mermaid_transparent.png" style="width:210px;height:auto;display:block;" alt="マーメイドキャラクター"/>
+      </div>
+      <div class="char-bubble">いっしょに　たのしく　べんきょうしよう！<br>１ぷんで　なんもん　できるかな？✨</div>
+    </div>
+
+    <div class="diff-label">むずかしさを えらんでね 👑</div>
+    <div class="diff-btns">
+      <button class="diff-btn" onclick="setDiff('easy')" id="dEasy">⭐ かんたん</button>
+      <button class="diff-btn selected" onclick="setDiff('normal')" id="dNormal">⭐⭐ ふつう</button>
+      <button class="diff-btn" onclick="setDiff('hard')" id="dHard">⭐⭐⭐ むずかしい</button>
+    </div>
+
+    <div style="background:var(--pink-light);border-radius:16px;padding:12px;margin-bottom:18px;font-size:0.88rem;color:#aa4488;line-height:1.7;">
+      <b>📖 れんしゅうないよう</b><br>
+      ⭐ かんたん：たしざん（こたえ５まで）<br>
+      ⭐⭐ ふつう：たしざん・ひきざん（１０まで）<br>
+      ⭐⭐⭐ むずかしい：たしざん・ひきざん（くり上がりあり）
+    </div>
+
+    <button class="btn btn-primary sparkle" onclick="startGame()">🌟 スタート！ 🌟</button>
+
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="showScreen('screenHistory')">📊 きろく</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: QUIZ ========== -->
+<div class="screen" id="screenQuiz">
+  <div class="card">
+    <div class="timer-wrap">
+      <div class="timer-circle" id="timerCircle">
+        <div class="timer-inner" id="timerNum">60</div>
+      </div>
+      <div style="flex:1">
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="score-row">
+          <span>もんだい <b id="qNum">1</b></span>
+          <span>⭕ <b id="correctCount">0</b></span>
+          <span class="score-stars" id="scoreStars">✨</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="problem-box">
+      <div class="problem-equation" id="problemEq">
+        <!-- dynamically filled -->
+      </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="numpad">
+      <button class="num-key" onclick="numPress('1')">1</button>
+      <button class="num-key" onclick="numPress('2')">2</button>
+      <button class="num-key" onclick="numPress('3')">3</button>
+      <button class="num-key" onclick="numPress('4')">4</button>
+      <button class="num-key" onclick="numPress('5')">5</button>
+      <button class="num-key" onclick="numPress('6')">6</button>
+      <button class="num-key" onclick="numPress('7')">7</button>
+      <button class="num-key" onclick="numPress('8')">8</button>
+      <button class="num-key" onclick="numPress('9')">9</button>
+      <button class="num-key" onclick="numPress('0')">0</button>
+      <button class="num-key del" onclick="numDel()">⌫</button>
+    </div>
+
+    <button class="btn btn-answer" onclick="checkAnswer()">こたえる ✅</button>
+
+    <div style="text-align:center;margin-top:10px;">
+      <button class="btn btn-secondary" onclick="endGame(true)">🔚 おわる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: RESULT ========== -->
+<div class="screen" id="screenResult">
+  <div class="card">
+    <div class="section-title">🌟 おつかれさま！ 🌟</div>
+
+    <div class="char-wrap">
+      <div class="char-img" style="background:transparent;border:none;box-shadow:none;width:168px;height:auto;">
+        <img src="mermaid_transparent.png" style="width:168px;height:auto;display:block;" alt="マーメイドキャラクター"/>
+      </div>
+      <div class="char-bubble" id="resultMsg"></div>
+    </div>
+
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-score"><span id="resultScore">0</span>もん せいかい！</div>
+    <div class="result-detail" id="resultDetail"></div>
+
+    <div style="background:var(--pink-light);border-radius:16px;padding:12px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-around;text-align:center;">
+        <div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--pink-dark)" id="totalQ">0</div>
+          <div style="font-size:0.8rem;color:#aa4488">もんだいすう</div>
+        </div>
+        <div>
+          <div style="font-size:1.6rem;font-weight:900;color:#22aa66" id="totalC">0</div>
+          <div style="font-size:0.8rem;color:#aa4488">せいかい</div>
+        </div>
+        <div>
+          <div style="font-size:1.6rem;font-weight:900;color:#ee3333" id="totalW">0</div>
+          <div style="font-size:0.8rem;color:#aa4488">まちがい</div>
+        </div>
+        <div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--purple)" id="totalPct">0%</div>
+          <div style="font-size:0.8rem;color:#aa4488">せいかいりつ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-btns">
+      <button class="btn btn-primary" onclick="startGame()">もう１かい 🔄</button>
+      <button class="btn btn-secondary" onclick="showScreen('screenHistory')">📊 きろく</button>
+      <button class="btn btn-secondary" onclick="showScreen('screenStart')">🏠 トップ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: HISTORY ========== -->
+<div class="screen" id="screenHistory">
+  <div class="card">
+    <div class="section-title">📊 がくしゅうきろく</div>
+
+    <div style="display:flex;justify-content:space-around;background:var(--pink-light);border-radius:16px;padding:14px;margin-bottom:14px;text-align:center;">
+      <div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--pink-dark)" id="hTotalSessions">0</div>
+        <div style="font-size:0.8rem;color:#aa4488">かいすう</div>
+      </div>
+      <div>
+        <div style="font-size:1.8rem;font-weight:900;color:#22aa66" id="hBestScore">0</div>
+        <div style="font-size:0.8rem;color:#aa4488">さいこうもん</div>
+      </div>
+      <div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--purple)" id="hAvgPct">0%</div>
+        <div style="font-size:0.8rem;color:#aa4488">せいかいりつ</div>
+      </div>
+    </div>
+
+    <div class="history-list" id="historyList">
+      <div style="text-align:center;color:#cc88bb;padding:20px;">まだ　きろくが　ありません🌸<br>さあ　はじめよう！</div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="showScreen('screenStart')">🏠 トップ</button>
+      <button class="nav-btn" onclick="startGame()">▶ スタート</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let difficulty = 'normal';
+let currentAnswer = '';
+let correctAns = 0;
+let n1 = 0, n2 = 0, op = '+';
+let timeLeft = 60;
+let timerInterval = null;
+let qCount = 0;
+let cCount = 0;
+let wCount = 0;
+let canInput = true;
+let history = []; // {date, qCount, cCount, wCount, pct, diff}
+
+const CELEBRATE_MSGS = [
+  'おめでとう！\nよく　がんばったね！✨',
+  'すごい！\nせいかい！🌟',
+  'やったね！\nつぎも　がんばろう！💖',
+  'せいかい！\nプリンセスも　よろこんでるよ！👑',
+  'ブラボー！\nとっても　じょうず！🌸',
+  'かんぺき！\nさすが！✨',
+];
+
+const RESULT_MSGS = [
+  (pct) => pct >= 90 ? '👑 パーフェクト！\nプリンセスも びっくり！すごすぎる！' :
+  pct >= 70 ? '🌟 とても　じょうず！\nもっと　れんしゅうしてね！' :
+  pct >= 50 ? '💪 よく　がんばったね！\nつぎは　もっと　できるよ！' :
+              '🌸 れんしゅうが　たいせつ！\nまた　いっしょに　やろう！'
+];
+
+// ============================================================
+// FLOATING ELEMENTS
+// ============================================================
+const FLOATER_EMOJIS = ['🌸','💖','⭐','✨','🌟','💎','👑','🌈','🦋','🌺','💜','🎀'];
+(function initFloaters() {
+  const wrap = document.getElementById('floaters');
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    el.className = 'floater';
+    el.textContent = FLOATER_EMOJIS[Math.floor(Math.random() * FLOATER_EMOJIS.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (8 + Math.random() * 14) + 's';
+    el.style.animationDelay = (Math.random() * 12) + 's';
+    el.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+    wrap.appendChild(el);
+  }
+})();
+
+// ============================================================
+// SCREEN MANAGEMENT
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screenHistory') renderHistory();
+}
+
+// ============================================================
+// DIFFICULTY
+// ============================================================
+function setDiff(d) {
+  difficulty = d;
+  ['dEasy','dNormal','dHard'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById(d === 'easy' ? 'dEasy' : d === 'normal' ? 'dNormal' : 'dHard').classList.add('selected');
+}
+
+// ============================================================
+// PROBLEM GENERATION
+// ============================================================
+function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateProblem() {
+  if (difficulty === 'easy') {
+    // Addition only, answer <= 5
+    n1 = rnd(1, 4);
+    n2 = rnd(1, 5 - n1);
+    op = '+';
+  } else if (difficulty === 'normal') {
+    // Addition and subtraction within 10
+    const isAdd = Math.random() < 0.55;
+    if (isAdd) {
+      n1 = rnd(1, 9);
+      n2 = rnd(1, 10 - n1);
+      op = '+';
+    } else {
+      n1 = rnd(2, 10);
+      n2 = rnd(1, n1 - 1);
+      op = '-';
+    }
+  } else {
+    // Hard: carrying/borrowing allowed (sums up to 18)
+    const isAdd = Math.random() < 0.5;
+    if (isAdd) {
+      n1 = rnd(2, 9);
+      n2 = rnd(2, 9);
+      op = '+';
+    } else {
+      const ans = rnd(0, 9);
+      n2 = rnd(1, 9);
+      n1 = ans + n2;
+      op = '-';
+    }
+  }
+  correctAns = op === '+' ? n1 + n2 : n1 - n2;
+}
+
+// ============================================================
+// CANDY DISPLAY
+// ============================================================
+function makeCandyRow(n) {
+  const row = document.createElement('div');
+  row.className = 'candy-row';
+  const emojis = ['🍬','🍭','🍡','🍰','🍩','🍪','🎂','🧁'];
+  const e = emojis[Math.floor(Math.random() * emojis.length)];
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('span');
+    c.className = 'candy';
+    c.textContent = e;
+    c.style.animationDelay = (i * 0.05) + 's';
+    row.appendChild(c);
+  }
+  return row;
+}
+
+function renderProblem() {
+  currentAnswer = '';
+  canInput = true;
+
+  const eq = document.getElementById('problemEq');
+  eq.innerHTML = '';
+
+  // n1
+  const b1 = document.createElement('div');
+  b1.className = 'num-block';
+  const d1 = document.createElement('div');
+  d1.className = 'num-display';
+  d1.textContent = n1;
+  b1.appendChild(d1);
+  if (n1 <= 10) b1.appendChild(makeCandyRow(n1));
+  eq.appendChild(b1);
+
+  // operator
+  const opEl = document.createElement('div');
+  opEl.className = 'operator';
+  opEl.textContent = op === '+' ? '＋' : '－';
+  eq.appendChild(opEl);
+
+  // n2
+  const b2 = document.createElement('div');
+  b2.className = 'num-block';
+  const d2 = document.createElement('div');
+  d2.className = 'num-display';
+  d2.textContent = n2;
+  b2.appendChild(d2);
+  if (n2 <= 10) b2.appendChild(makeCandyRow(n2));
+  eq.appendChild(b2);
+
+  // equals
+  const eqEl = document.createElement('div');
+  eqEl.className = 'equals';
+  eqEl.textContent = '＝';
+  eq.appendChild(eqEl);
+
+  // answer block
+  const ab = document.createElement('div');
+  ab.className = 'answer-block';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.id = 'answerInput';
+  inp.className = 'answer-input';
+  inp.maxLength = 2;
+  inp.readOnly = true;
+  inp.placeholder = '？';
+  ab.appendChild(inp);
+  eq.appendChild(ab);
+
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('qNum').textContent = qCount + 1;
+}
+
+// ============================================================
+// INPUT
+// ============================================================
+function numPress(k) {
+  if (!canInput) return;
+  if (currentAnswer.length >= 2) return;
+  currentAnswer += k;
+  const inp = document.getElementById('answerInput');
+  if (inp) inp.value = currentAnswer;
+}
+
+function numDel() {
+  if (!canInput) return;
+  currentAnswer = currentAnswer.slice(0, -1);
+  const inp = document.getElementById('answerInput');
+  if (inp) inp.value = currentAnswer;
+}
+
+// ============================================================
+// CHECK ANSWER
+// ============================================================
+function checkAnswer() {
+  if (!canInput) return;
+  if (currentAnswer === '') return;
+  const inp = document.getElementById('answerInput');
+  const fb = document.getElementById('feedback');
+  const guess = parseInt(currentAnswer, 10);
+  qCount++;
+
+  if (guess === correctAns) {
+    cCount++;
+    canInput = false;
+    inp.classList.add('correct');
+    fb.textContent = '⭕ せいかい！ すごい！';
+    fb.className = 'feedback correct';
+    updateScoreStars();
+
+    // Short celebrate
+    const msg = CELEBRATE_MSGS[Math.floor(Math.random() * CELEBRATE_MSGS.length)];
+    showCelebrate(msg, false);
+
+  } else {
+    wCount++;
+    canInput = false;
+    inp.classList.add('wrong');
+    fb.textContent = `❌ こたえは ${correctAns} だよ！`;
+    fb.className = 'feedback wrong';
+    setTimeout(() => nextQuestion(), 1400);
+  }
+}
+
+function updateScoreStars() {
+  const el = document.getElementById('scoreStars');
+  const stars = cCount >= 10 ? '⭐⭐⭐' : cCount >= 5 ? '⭐⭐' : cCount >= 1 ? '⭐' : '✨';
+  el.textContent = stars;
+  document.getElementById('correctCount').textContent = cCount;
+}
+
+// ============================================================
+// CELEBRATE OVERLAY
+// ============================================================
+function showCelebrate(msg, isFinal) {
+  document.getElementById('celebMsg').innerHTML = msg.replace(/\n/g, '<br>');
+  document.getElementById('celebrateOverlay').classList.add('show');
+  launchConfetti();
+  if (!isFinal) {
+    // Auto-close after 1.5s
+    setTimeout(() => {
+      closeCelebrate();
+    }, 1800);
+  }
+}
+
+function closeCelebrate() {
+  document.getElementById('celebrateOverlay').classList.remove('show');
+  nextQuestion();
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  timeLeft = 60;
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      endGame(false);
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const pct = (timeLeft / 60) * 360;
+  const numEl = document.getElementById('timerNum');
+  const circle = document.getElementById('timerCircle');
+  numEl.textContent = timeLeft;
+  circle.style.setProperty('--pct', pct + 'deg');
+  if (timeLeft <= 10) {
+    circle.classList.add('warning');
+  } else {
+    circle.classList.remove('warning');
+  }
+}
+
+// ============================================================
+// GAME FLOW
+// ============================================================
+function startGame() {
+  qCount = 0; cCount = 0; wCount = 0;
+  clearInterval(timerInterval);
+  document.getElementById('celebrateOverlay').classList.remove('show');
+  generateProblem();
+  renderProblem();
+  showScreen('screenQuiz');
+  startTimer();
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('correctCount').textContent = '0';
+  document.getElementById('scoreStars').textContent = '✨';
+}
+
+function nextQuestion() {
+  generateProblem();
+  renderProblem();
+  const pct = Math.min((cCount / 20) * 100, 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function endGame(manual) {
+  clearInterval(timerInterval);
+  document.getElementById('celebrateOverlay').classList.remove('show');
+
+  const total = qCount;
+  const pct = total > 0 ? Math.round((cCount / total) * 100) : 0;
+
+  // Save history
+  history.unshift({
+    date: new Date().toLocaleString('ja-JP'),
+    qCount: total,
+    cCount,
+    wCount: total - cCount,
+    pct,
+    diff: difficulty,
+  });
+
+  // Result UI
+  document.getElementById('resultScore').textContent = cCount;
+  document.getElementById('totalQ').textContent = total;
+  document.getElementById('totalC').textContent = cCount;
+  document.getElementById('totalW').textContent = total - cCount;
+  document.getElementById('totalPct').textContent = pct + '%';
+
+  const stars = pct >= 90 ? '⭐⭐⭐' : pct >= 70 ? '⭐⭐' : pct >= 50 ? '⭐' : '';
+  document.getElementById('resultStars').textContent = stars + (pct >= 90 ? '🎉' : pct >= 70 ? '🌟' : '🌸');
+  document.getElementById('resultMsg').innerHTML = RESULT_MSGS[0](pct).replace(/\n/g, '<br>');
+  document.getElementById('resultDetail').textContent =
+    `${total}もん　ちょうせん　して　${cCount}もん　せいかい！（${pct}%）`;
+
+  showScreen('screenResult');
+  if (pct >= 70) launchConfetti();
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function launchConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#ff69b4','#ff8cba','#ffd700','#cc66dd','#88ccff','#ff4488','#ffaadd'];
+  for (let i = 0; i < 70; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.width = (6 + Math.random() * 8) + 'px';
+    p.style.height = (6 + Math.random() * 8) + 'px';
+    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    p.style.animationDuration = (1.5 + Math.random() * 2.5) + 's';
+    p.style.animationDelay = (Math.random() * 1) + 's';
+    container.appendChild(p);
+  }
+  setTimeout(() => container.innerHTML = '', 4000);
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistory() {
+  const hEl = document.getElementById('historyList');
+  const diffLabel = { easy:'かんたん', normal:'ふつう', hard:'むずかしい' };
+
+  if (history.length === 0) {
+    hEl.innerHTML = '<div style="text-align:center;color:#cc88bb;padding:20px;">まだ　きろくが　ありません🌸<br>さあ　はじめよう！</div>';
+  } else {
+    hEl.innerHTML = history.map(h => `
+      <div class="history-item">
+        <div>
+          <div style="font-weight:700;color:var(--pink-dark)">${h.cCount}もん せいかい</div>
+          <div class="date">${h.date} ／ ${diffLabel[h.diff] || h.diff}</div>
+        </div>
+        <div class="score-badge">${h.pct}%</div>
+      </div>
+    `).join('');
+  }
+
+  // Stats
+  document.getElementById('hTotalSessions').textContent = history.length;
+  const best = history.length ? Math.max(...history.map(h => h.cCount)) : 0;
+  document.getElementById('hBestScore').textContent = best;
+  const avgPct = history.length ? Math.round(history.reduce((a,h) => a + h.pct, 0) / history.length) : 0;
+  document.getElementById('hAvgPct').textContent = avgPct + '%';
+}
+
+// ============================================================
+// KEYBOARD SUPPORT
+// ============================================================
+document.addEventListener('keydown', e => {
+  const screenQuiz = document.getElementById('screenQuiz');
+  if (!screenQuiz.classList.contains('active')) return;
+  if (e.key >= '0' && e.key <= '9') numPress(e.key);
+  if (e.key === 'Backspace') numDel();
+  if (e.key === 'Enter') checkAnswer();
+});
+</script>
+</body>
+</html>
