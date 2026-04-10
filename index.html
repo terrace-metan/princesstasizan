@@ -67,7 +67,7 @@
     background: rgba(255,255,255,0.92);
     border-radius: 30px;
     box-shadow: 0 8px 32px rgba(255,105,180,0.18), 0 2px 8px rgba(0,0,0,0.08);
-    padding: 30px 28px;
+    padding: clamp(16px, 5vw, 30px) clamp(14px, 5vw, 28px);
     max-width: 520px;
     width: 100%;
     border: 3px solid var(--pink-mid);
@@ -75,7 +75,7 @@
 
   /* ===== TITLE ===== */
   .app-title {
-    font-size: 2.2rem;
+    font-size: clamp(1.3rem, 5.5vw, 2.2rem);
     font-weight: 900;
     background: linear-gradient(135deg, var(--pink-dark), var(--purple));
     -webkit-background-clip: text;
@@ -83,7 +83,7 @@
     background-clip: text;
     text-align: center;
     text-shadow: none;
-    letter-spacing: 2px;
+    letter-spacing: clamp(0px, 0.5vw, 2px);
     margin-bottom: 6px;
     white-space: nowrap;
   }
@@ -270,7 +270,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 12px;
+    gap: clamp(4px, 2vw, 12px);
     flex-wrap: nowrap;
   }
   .num-block {
@@ -280,7 +280,7 @@
     gap: 6px;
   }
   .num-display {
-    font-size: 3rem;
+    font-size: clamp(1.8rem, 7vw, 3rem);
     font-weight: 900;
     color: #cc44aa;
     line-height: 1;
@@ -298,13 +298,13 @@
   }
   @keyframes candyPop { from { transform: scale(0); } to { transform: scale(1); } }
   .operator {
-    font-size: 2.8rem;
+    font-size: clamp(1.6rem, 6vw, 2.8rem);
     font-weight: 900;
     color: var(--purple);
     padding-top: 4px;
   }
   .equals {
-    font-size: 2.8rem;
+    font-size: clamp(1.6rem, 6vw, 2.8rem);
     font-weight: 900;
     color: var(--purple);
     padding-top: 4px;
@@ -318,12 +318,12 @@
 
   /* ===== INPUT ===== */
   .answer-input {
-    width: 90px;
-    height: 68px;
+    width: clamp(64px, 18vw, 90px);
+    height: clamp(52px, 15vw, 68px);
     border-radius: 16px;
     border: 3px solid var(--pink-mid);
     font-family: inherit;
-    font-size: 2.6rem;
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
     font-weight: 900;
     text-align: center;
     color: var(--pink-dark);
@@ -554,10 +554,13 @@
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 400px) {
-    .num-display { font-size: 2.2rem; }
-    .operator, .equals { font-size: 2rem; }
-    .answer-input { width: 72px; height: 56px; font-size: 2rem; }
-    .candy { font-size: 0.9rem; }
+    .candy { font-size: 0.85rem; }
+    .candy-row { max-width: 100px; }
+    .screen { padding: 12px; }
+    .char-img { width: 140px; height: 140px; font-size: 70px; }
+    .numpad { gap: 5px; }
+    .num-key { padding: 10px 0; font-size: 1.2rem; }
+    .app-subtitle { font-size: 0.82rem; }
   }
 </style>
 </head>
